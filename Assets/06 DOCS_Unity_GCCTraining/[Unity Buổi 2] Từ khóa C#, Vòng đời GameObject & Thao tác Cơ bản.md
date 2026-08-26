@@ -84,6 +84,8 @@
 
 **Miêu tả ngắn gọn từng hàm**
 - **`Awake()`:** Gọi **1 lần duy nhất** ngay khi script nạp vào bộ nhớ (kể cả khi component bị tắt). Dùng để tự khởi tạo biến nội bộ.
+	+ GameObject phải bật thì Awake() mới chạy
+	+ Script không chạy thì Awake() trong script vẫn chạy
     
 - **`OnEnable()`:** Gọi **mỗi lần** GameObject hoặc Component chuyển từ trạng thái Tắt sang Bật (`active = true`). Thường dùng để đăng ký sự kiện (Event).
     
@@ -99,40 +101,28 @@
     
 - **`OnDestroy()`:** Gọi **1 lần cuối cùng** ngay trước khi GameObject bị xóa vĩnh viễn khỏi màn chơi (`Destroy(gameObject)`). Dùng để dọn dẹp tài nguyên.
 
-**Sơ đồ trực quan**
-	┌──────────────┐
-	│   Awake()          │ ──► [Chạy 1 lần duy nhất khi nạp vào bộ nhớ]
-	└──────┬───────┘
-	       ▼
-	┌──────────────┐
-	│  OnEnable()      │ ──► [Chạy mỗi khi GameObject/Component được BẬT]
-	└──────┬───────┘
-	       ▼
-	┌──────────────┐
-	│   Start()             │ ──► [Chạy 1 lần trước frame đầu tiên]
-	└──────┬───────┘
-	       ▼
-	 ╔═══════════════════════════════════════════════════════════╗
-	 ║                     GAME LOOP (Lặp liên tục)                                            ║
-	 ║                                                                                                           ║
-	 ║  ┌─────────────────┐                                                                      ║
-	 ║  │  FixedUpdate()       │ ──► [Chu kỳ cố định: Vật lý/Rigidbody]      ║
-	 ║  └────────┬────────┘                                                                      ║
-	 ║           ▼                                                                                             ║
-	 ║  ┌─────────────────┐                                                                      ║
-	 ║  │    Update()             │ ──► [Mỗi frame: Input / Logic thường]       ║
-	 ║  └────────┬────────┘                                                                      ║
-	 ║           ▼                                                                                             ║
-	 ║  ┌─────────────────┐                                                                      ║
-	 ║  │   LateUpdate()       │ ──► [Sau Update: Xử lý Camera bám]          ║
-	 ║  └─────────────────┘                                                                       ║
-	 ╚═══════════════════════════════════════════════════════════╝
-	       │
-	       ▼ (Khi tắt hoặc xóa đối tượng)
-	┌──────────────┐
-	│  OnDisable()     │ ──► [Chạy mỗi khi GameObject/Component bị TẮT]
-	└──────┬───────┘
-	       ▼
-	┌──────────────┐
-	│  OnDestroy()    │ ──► [Chạy 1 lần khi đối tượng bị HỦY hoàn toàn]
-	└──────────────┘
+## 3. TIME
+- `Time.deltaTime`: Khoảng thời gian giữa 2 lần `Update()`
+- `Time.fixedDeltaTime`: Khoảng thời gian giữa 2 lần `FixUpdate()`
+- `Time.unscaledDeltaTime`: Khoảng thời gian giữa 2 lần `Update() nhưng không ảnh hưởng bởi `Time.Timescale`
+- `Time.timeScale`: là khoảng thời gian game chạy, ví dụ: `Time.TimeScale` = 10, `playerSpeed` = 8 -> `playerSpeed` thực thụ là 80
+
+## 4. THƯ VIỆN MATHF & DI CHUYỂN TRANSFORM
+**Một số hàm trong Mathf**
+- `Mathf.Clamp(float value, float min, float max)`: Giới hạn giá trị nằm trong khoảng từ min đến max (thường dùng để khóa máu không âm/vượt max, hoặc giới hạn góc quay camera).
+- `Mathf.Lerp(float a, float b, float t)`: Nội suy tuyến tính giữa a và b theo tỉ lệ t ($0 \le t \le 1$), tạo hiệu ứng chuyển động hoặc đổi màu mượt mà.
+- `Mathf.Abs(float f)`: Lấy giá trị tuyệt đối của một số.
+- `Mathf.MoveTowards(float current, float target, float maxDelta)`: Tăng hoặc giảm dần từ current về target với bước nhảy cố định maxDelta mà không bao giờ vượt quá đích.
+- `Mathf.PingPong(float t, float length)`: Tạo dao động qua lại tuần hoàn từ $0$ đến length (rất tiện để làm vật thể lắc lư, nhấp nháy đèn).
+- `Mathf.RoundToInt / FloorToInt / CeilToInt`: Làm tròn số thực thành số nguyên (làm tròn gần nhất / làm tròn xuống / làm tròn lên).
+
+**Một số hàm trong Transform**
+- `transform.Translate(Vector3 translation)`: Di chuyển vật thể theo hướng và khoảng cách chỉ định (thường nhân với Time.deltaTime).
+- `transform.Rotate(Vector3 eulers)`: Xoay vật thể quanh các trục X, Y, Z.
+- `transform.LookAt(Transform target)`: Tự động xoay trục Z (mặt trước) của vật thể hướng thẳng về phía mục tiêu.
+- `transform.SetParent(Transform parent)`: Gán đối tượng làm con của một Transform khác (hoặc truyền null để tách ra làm gốc).
+- `transform.Find(string n)`: Tìm kiếm một đối tượng con theo tên nằm bên dưới hệ thống phân cấp của nó.
+- `transform.position` vs `transform.localPosition`:
+ 	`position`: Tọa độ thực trong không gian thế giới (World Space).
+ 	`localPosition`: Tọa độ tương đối so với vật thể cha (Local Space).
+
