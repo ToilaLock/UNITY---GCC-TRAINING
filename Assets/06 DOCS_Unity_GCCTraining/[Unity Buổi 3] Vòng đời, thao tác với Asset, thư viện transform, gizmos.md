@@ -9,6 +9,8 @@
 - **Tính Trừu tượng (Abstraction):** Tập trung vào việc thể hiện những tính năng cốt lõi của đối tượng và ẩn đi chi tiết cài đặt phức tạp bên dưới (sử dụng qua `interface` hoặc `abstract class`), giúp hệ thống giảm độ phụ thuộc và dễ mở rộng.
 
 
+---
+
 ## 2. MONOBEHAVIOR VÀ VÒNG ĐỜI
 
 **Monobehavior**: là lớp cơ sở (base class) trong Unity mà mọi C# script muốn gắn trực tiếp vào một **GameObject** đều phải kế thừa. Nó đóng vai trò là cầu nối giữa code C# và engine của Unity. 
@@ -33,10 +35,13 @@ Những hàm dưới đây thường được gọi trong script đều được
 - **`OnDisable()`:** Gọi **mỗi lần** GameObject hoặc Component bị tắt đi (`active = false`). Thường dùng để hủy đăng ký sự kiện tránh rò rỉ bộ nhớ.
     
 - **`OnDestroy()`:** Gọi **1 lần cuối cùng** ngay trước khi GameObject bị xóa vĩnh viễn khỏi màn chơi (`Destroy(gameObject)`). Dùng để dọn dẹp tài nguyên.
+
+---
 ## 3. TẢN MẠN VỀ ASSET
 ![[Buổi 3 png1.png]]
 Nhìn hình và nhớ 😋
 
+---
 ## 4. Transform
 Là 1 component bắt buộc phải có trong mỗi `GameObject`, tạo GameObject là tự có.
 ![[Buổi 3 png2.png]]
@@ -56,14 +61,21 @@ Các hàm thao tác với Transform thường dùng:
 - `transform.Rotate`: Xoay GameObject theo các góc quay cho trước.
 - `transform.LookAt`: Tự động xoay mặt/hướng của GameObject nhìn thẳng về phía một đối tượng hoặc vị trí mục tiêu.
 - `transform.SetParent`: Thay đổi hoặc gán quan hệ cha - con cho `GameObject` (dùng khi nhặt item vào inventory hoặc thả ra). END
+
+---
+
 ## 5. TIME
 - `Time.deltaTime`: Khoảng thời gian giữa 2 lần `Update()`
 - `Time.fixedDeltaTime`: Khoảng thời gian giữa 2 lần `FixUpdate()`
 - `Time.unscaledDeltaTime`: Khoảng thời gian giữa 2 lần `Update()` nhưng không ảnh hưởng bởi `Time.Timescale`
 - `Time.timeScale`: là khoảng thời gian game chạy, ví dụ: `Time.TimeScale` = 10, `playerSpeed` = 8 -> `playerSpeed` thực thụ là 80 -> Có thể chỉnh ở **Project Setting**
 
+---
+
 ## 6. MATHF
+
 Đa số dùng để xử lý Logic game
+
 **Một số hàm trong Mathf**:.
 
 | Hàm                                                              | Công dụng                                                                                                                    |
@@ -75,36 +87,45 @@ Các hàm thao tác với Transform thường dùng:
 | `Mathf.PingPong(float t, float length)`                          | Tạo dao động qua lại tuần hoàn từ $0$ đến length (rất tiện để làm vật thể lắc lư, nhấp nháy đèn).                            |
 | `Mathf.RoundToInt / FloorToInt / CeilToInt`                      | Làm tròn số thực thành số nguyên (làm tròn gần nhất / làm tròn xuống / làm tròn lên).                                        |
 
-
+---
 ## 7. VECTOR
-Một số loại vector** cơ bản
+**Một số loại vector cơ bản**
 - `Vector2(x,y)`: Dùng cho 2 chiều
 - `Vector3(x,y,z)`: Dùng cho 3 chiều
 
-Các hướng Vector có sẵn trong Unity: 
-- `Vector3.zero` -> `(0, 0, 0)` 
-- `Vector3.one` ->`(1, 1, 1)` 
-- `Vector3.up` ->`(0, 1, 0)` 
-- `Vector3.down` -> `(0, -1, 0)` 
-- `Vector3.right` -> `(1, 0, 0)` 
-- `Vector3.left` ->`(-1, 0, 0)` 
-- `Vector3.forward` -> `(0, 0, 1)` 
-- `Vector3.back` -> `(0, 0, -1)`
+**Các hướng Vector có sẵn trong Unity:** 
 
-Các phép toán với Vector trong Unity:
-    - `Vector3.Distance(position 1, position 2)`: Tính khoảng cách giữa 2 `Object`.
-    - `.normalized`: Dùng để chuẩn hóa Vector thành 1 Vector hướng (Vector đơn vị). `Vector3 direction = direction.normalized` -> Hữu ích khi cần di chuyển chéo
-    - `Vector3.Lerp(position 1, position 2, float tỉ lệ)`: Dùng để làm mượt chuyển động. Chuyển động từ position 1 -> position 2 với khoảng cách là `tỉ lệ`, tức là sẽ di chuyển được `tỉ lệ`% quãng đường khi được gọi, khi được dùng trong hàm `Update()` và được nhân với `deltaTime` thì sẽ tạo được hiệu ứng chuyển động mượt.
+| Hướng             | Tọa độ       |
+| ----------------- | ------------ |
+| `Vector3.zero`    | `(0, 0, 0)`  |
+| `Vector3.one`     | `(1, 1, 1)`  |
+| `Vector3.up`      | `(0, 1, 0)`  |
+| `Vector3.down`    | `(0, -1, 0)` |
+| `Vector3.right`   | `(1, 0, 0)`  |
+| `Vector3.left`    | `(-1, 0, 0)` |
+| `Vector3.forward` | `(0, 0, 1)`  |
+| `Vector3.back`    | `(0, 0, -1)` |
+
+
+**Các phép toán với Vector trong Unity:**
+
+| Phép Toán                                           | Công dụng                                                                                                                                                                                                                                                                |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Vector3.Distance(position 1, position 2)`          | Tính khoảng cách giữa 2 `Object`.                                                                                                                                                                                                                                        |
+| `.normalized`                                       | Dùng để chuẩn hóa Vector thành 1 Vector hướng (Vector đơn vị). `Vector3 direction = direction.normalized` -> Hữu ích khi cần di chuyển chéo                                                                                                                              |
+| `Vector3.Lerp(position 1, position 2, float tỉ lệ)` | Dùng để làm mượt chuyển động. Chuyển động từ position 1 -> position 2 với khoảng cách là `tỉ lệ`, tức là sẽ di chuyển được `tỉ lệ`% quãng đường khi được gọi, khi được dùng trong hàm `Update()` và được nhân với `deltaTime` thì sẽ tạo được hiệu ứng chuyển động mượt. |
+
+---
 
 ## 8. GIZMOS
 **Gizmos** nói chung là vẽ lên Scene mà không tác động gì đến game
 
-**1. Hai hàm sự kiện chính của Gizmos**
+**Hai hàm sự kiện chính của Gizmos**
 - **`OnDrawGizmos()`:** Được gọi liên tục mỗi khi cửa sổ Scene cập nhật, vẽ Gizmos bất kể GameObject có được chọn hay không.
 
 - **`OnDrawGizmosSelected()`:** Chỉ vẽ Gizmos khi GameObject chứa script đó đang được click chọn trong Hierarchy/Scene (giúp cửa sổ Scene không bị rối khi có quá nhiều đối tượng).
 
-**2. Các hàm vẽ thông dụng**
+**Các hàm vẽ thông dụng**
 
 | Hàm Gizmos                              | Công dụng thực tế                                                                 |
 | --------------------------------------- | --------------------------------------------------------------------------------- |
@@ -115,3 +136,5 @@ Các phép toán với Vector trong Unity:
 | `Gizmos.DrawLine(from, to)`             | Nối đường thẳng giữa hai đối tượng hoặc vẽ đường Raycast kiểm tra va chạm.        |
 | `Gizmos.DrawRay(from, direction)`       | Vẽ tia bắn từ vị trí xuất phát theo một hướng và độ dài vector.                   |
 | `Gizmos.DrawIcon(center, name)`         | Hiển thị một icon ảnh tùy chỉnh ngay tại vị trí trong Scene.                      |
+
+---

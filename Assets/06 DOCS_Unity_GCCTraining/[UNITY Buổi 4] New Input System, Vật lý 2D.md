@@ -6,6 +6,7 @@ Hệ thống xử lý đầu vào hiện đại thay thế **Input Manager (Lega
 - **Input Action Asset:** File cấu hình tập trung chứa toàn bộ hành động (Action) của trò chơi.
 - **Action Maps:** Phân chia ngữ cảnh hành động để tránh xung đột phím (Ví dụ: `Gameplay`, `UI/Menu`, `Pause`).
 - **Player Input Component:** Cầu nối gắn trực tiếp lên GameObject để chuyển tiếp sự kiện phím vào code C#.
+---
 ## 2. Physics 2D
 
 Hệ thống mô phỏng va chạm và các quy luật vật lý trong không gian hai chiều.
@@ -37,6 +38,7 @@ private bool CheckGround(Transform checkPos, float distance, LayerMask groundLay
 }
 ```
 
+---
 ## 3. Các phương pháp di chuyển nhân vật
 
 **Dịch chuyển tọa độ (`Transform.Translate` / Thay đổi `position`):**
@@ -64,4 +66,4 @@ rb.linearVelocity = new Vector2(moveInput.x * speed, rb.linearVelocity.y);
 // 3. Tác động lực tức thời (Jump / Dash)
 rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
 ```
-
+---
