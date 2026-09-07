@@ -6,8 +6,45 @@ Hệ thống xử lý đầu vào hiện đại thay thế **Input Manager (Lega
 - **Input Action Asset:** File cấu hình tập trung chứa toàn bộ hành động (Action) của trò chơi.
 - **Action Maps:** Phân chia ngữ cảnh hành động để tránh xung đột phím (Ví dụ: `Gameplay`, `UI/Menu`, `Pause`).
 - **Player Input Component:** Cầu nối gắn trực tiếp lên GameObject để chuyển tiếp sự kiện phím vào code C#.
+
+**Cách Setup 1 Input System**
+- Edit/Project Setting/Input Manager/Nhìn vào những dấu +
+- Action Properties gồm Action Type và Control Type -> ở mục Control Type, chọn loại biến trả về.
+
+
+
+
+**Cấu trúc một script nhẹ nhàng**
+```C#
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class Player : MonoBehaviour
+{
+    // tạo biến Action
+    InputAction MoveAction;
+
+    private void Awake() {
+        // tìm input action
+        MoveAction = InputSystem.actions.FindAction("Movement");
+    }
+
+    private void Update() {
+        // debug xác định bấm hay không
+        Debug.Log(MoveAction.ReadValue<Vector2>()); // vector là mục "Control Type" trong "Action Properties"
+        if (MoveAction.WasPressedThisFrame())
+        {
+            Debug.Log("MOVING");
+        }
+    }
+}
+```
+
 ---
 ## 2. Physics 2D
+
+**Rigid Body 2D Component**
+- Body Type: Dynamic (Va chạm), Kenematic (Chỉnh thông số bằng code)
 
 Hệ thống mô phỏng va chạm và các quy luật vật lý trong không gian hai chiều.
 
