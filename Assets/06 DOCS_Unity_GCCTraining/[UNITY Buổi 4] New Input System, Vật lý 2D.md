@@ -11,9 +11,6 @@ Hệ thống xử lý đầu vào hiện đại thay thế **Input Manager (Lega
 - Edit/Project Setting/Input Manager/Nhìn vào những dấu +
 - Action Properties gồm Action Type và Control Type -> ở mục Control Type, chọn loại biến trả về.
 
-
-
-
 **Cấu trúc một script nhẹ nhàng**
 ```C#
 using UnityEngine;

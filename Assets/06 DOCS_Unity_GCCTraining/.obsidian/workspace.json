@@ -83,7 +83,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 260.3359375
   },
   "right": {
     "id": "eeb77db45d127292",
@@ -190,8 +190,11 @@
   },
   "active": "62d8fb045db6a4a4",
   "lastOpenFiles": [
-    "[Unity Buổi 3] Vòng đời, thao tác với Asset, thư viện transform, gizmos.md",
+    "[UNITY Buổi 5] Trigger, Raycast, Layermask.md",
     "[UNITY Buổi 4] New Input System, Vật lý 2D.md",
+    "Untitled.base",
+    "Untitled 1.base",
+    "[Unity Buổi 3] Vòng đời, thao tác với Asset, thư viện transform, gizmos.md",
     "[UNITY Buổi 4] New Input System, Vật lý 2D.md.meta",
     "[UNITY BUỔI 4] New Input System, Vật lý 2D.md.meta",
     "[Unity Buổi 2] Từ khóa C#, Vòng đời GameObject & Thao tác Cơ bản.md",
@@ -204,7 +207,6 @@
     "Pasted image 20260831151615.png.meta",
     "Pasted image 20260831151615.png",
     "[Unity Buổi 3] Vòng đời, thao tác với Asset, thư viện transform, gizmos.md.meta",
-    "[Unity Buổi 3].md.meta",
-    "Untitled.md.meta"
+    "[Unity Buổi 3].md.meta"
   ]
 }
