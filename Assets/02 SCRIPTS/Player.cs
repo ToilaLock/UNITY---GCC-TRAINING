@@ -29,7 +29,7 @@ public class Player : MonoBehaviour
 
     private void LateUpdate() {
         rb.linearVelocityX = moveInput * speed;
-        if (jumpAction.WasPressedThisFrame() && isGrounded())
+        if (jumpAction.IsPressed() && isGrounded())
         rb.linearVelocityY = jumpInput * jumpForce;
     }
 

@@ -94,3 +94,88 @@ if (hit != null)
     Debug.Log($"Phát hiện mặt đất: {hit.name}");
 }
 ```
+
+## 5. Prefab
+
+**Prefab (Prefabricated object)** là một khuôn mẫu (template) tài nguyên được định cấu hình sẵn (gồm Model/Sprite, các Component, thông số Inspector, script con) và lưu trữ dưới dạng một file tài sản (Asset) trong thư mục `Project`.
+
+**Đặc điểm nổi bật**
+- **Tái sử dụng (Reusability):** Tạo một đối tượng một lần (ví dụ: Viên đạn, Quái vật, Đồng xu) và sinh ra hàng loạt trong Scene mà không cần cấu hình lại từ đầu.
+    
+- **Đồng bộ hóa (Overrides & Apply):** Khi thay đổi thông số trên Prefab gốc, tất cả các bản thể (Instances) của Prefab đó đang có mặt trong Scene sẽ tự động cập nhật theo.
+    
+- **Quy trình tạo Prefab:**
+    1. Tạo và cấu hình GameObject hoàn chỉnh trong cửa sổ `Hierarchy` (gắn Sprite, Collider2D, Rigidbody2D,...).
+    2. Kéo (Drag & Drop) GameObject đó từ cửa sổ `Hierarchy` xuống thư mục `Project` (Assets/Prefabs).
+    3. Biểu tượng của đối tượng trong Hierarchy chuyển sang màu xanh dương báo hiệu đã liên kết với Prefab Asset.
+
+**Sự khác biệt giữa biến script và biến GameObject**
+```C#
+using UnityEngine;
+
+// Script gắn trên Prefab mẫu
+public class PHUC : MonoBehaviour
+{
+    public void ChaoHoi()
+    {
+        Debug.Log("Xin chào, tôi là component PHUC!");
+    }
+}
+
+// Script Spawner quản lý việc sinh đối tượng
+public class SpawnerDemo : MonoBehaviour
+{
+    [Header("Cách 1: Khai báo qua kiểu Component (Khuyên dùng)")]
+    [SerializeField] private PHUC phucPrefab;
+
+    [Header("Cách 2: Khai báo qua GameObject")]
+    [SerializeField] private GameObject objPrefab;
+
+    [SerializeField] private Transform spawnPoint;
+
+    private void Start()
+    {
+        // ==========================================
+        // CÁCH 1: DÙNG PHUC (Gọn gàng, Type-safe)
+        // ==========================================
+        // Instantiate trả về trực tiếp đối tượng kiểu PHUC, không cần GetComponent
+        PHUC clonePhuc = Instantiate(phucPrefab, spawnPoint.position, Quaternion.identity);
+        
+        // Gọi hàm của PHUC ngay lập tức
+        clonePhuc.ChaoHoi();
+
+        // Nếu muốn thao tác với GameObject chứa nó:
+        clonePhuc.gameObject.name = "Player_From_Component";
+
+
+        // ==========================================
+        // CÁCH 2: DÙNG GameObject (Thủ công hơn)
+        // ==========================================
+        // Instantiate trả về kiểu GameObject
+        GameObject cloneObj = Instantiate(objPrefab, spawnPoint.position + Vector3.right * 2f, Quaternion.identity);
+
+        // Bắt buộc phải tìm component PHUC trước khi dùng
+        if (cloneObj.TryGetComponent<PHUC>(out PHUC phucComponent))
+        {
+            phucComponent.ChaoHoi();
+        }
+        else
+        {
+            Debug.LogWarning("objPrefab được kéo vào không chứa script PHUC!");
+        }
+    }
+}
+```
+
+## 6. Hàm `Instantiate`
+
+`Instantiate` là hàm dựng sẵn của Unity dùng để **nhân bản hoặc sinh ra một bản thể (Clone/Instance)** của một GameObject hoặc Prefab vào không gian Scene tại thời gian thực (Runtime).
+
+### Các dạng cú pháp phổ biến
+
+|**Cú pháp**|**Công dụng**|**Trường hợp sử dụng**|
+|---|---|---|
+|`Instantiate(prefab)`|Tạo bản sao tại tọa độ và góc xoay mặc định của Prefab gốc|Sinh đối tượng không quan tâm vị trí (UI, GameManager)|
+|`Instantiate(prefab, position, rotation)`|Tạo bản sao tại đúng tọa độ (`Vector3`) và góc xoay (`Quaternion`) chỉ định|Sinh đạn từ nòng súng, sinh quái tại vị trí SpawnPoint|
+|`Instantiate(prefab, parent)`|Tạo bản sao và đặt trực tiếp làm con của một Transform khác|Sinh slot túi đồ trong bảng Inventory, sinh thanh máu trên Canvas UI|
+|`Instantiate(prefab, position, rotation, parent)`|Chỉ định đầy đủ vị trí, góc xoay và GameObject cha|Sinh hiệu ứng bám theo người chơi, quái thuộc một Wave|
