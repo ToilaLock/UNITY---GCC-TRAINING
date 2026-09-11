@@ -1,16 +1,25 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Enemy : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private int hp = 36;
+    
+    public void takeDame(int dame)
     {
-        
+        hp -= dame;
+        if (hp < 1)
+        {
+            hp = 0;
+            die();
+        }
+
+        Debug.Log($"Enemy hp now is {hp}");
     }
 
-    // Update is called once per frame
-    void Update()
+    private void die()
     {
-        
+        Destroy(gameObject);
+        Debug.Log("Enemy Dead");
     }
 }

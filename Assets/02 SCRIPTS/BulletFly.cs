@@ -5,6 +5,7 @@ public class BulletFly : MonoBehaviour
 {
     [SerializeField] private float speed = 10f;
     [SerializeField] private float lifeSpan = 3f;
+    [SerializeField] private int hitDame = 6;
     private Rigidbody2D rb;
 
     private void Awake()
@@ -24,10 +25,9 @@ public class BulletFly : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Enemy"))
+        if (other.TryGetComponent<Enemy> (out Enemy targetHP))
         {
-            Debug.Log("Hitted Enemy");
-            Destroy(other.gameObject);
+            targetHP.takeDame(hitDame);
             Destroy(gameObject);
         }
     }
