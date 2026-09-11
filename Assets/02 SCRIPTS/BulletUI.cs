@@ -4,8 +4,8 @@ public class BulletUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI bulletText;
 
-    public void BulletDisplay(int currentAmmo)
+    public void BulletDisplay(int currBullet)
     {
-        bulletText.text = $"Bullet: {currentAmmo}";
+        bulletText.text = $"Bullet: {currBullet}";
     }
 }
