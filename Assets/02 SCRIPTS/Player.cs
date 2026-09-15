@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
@@ -14,11 +15,18 @@ public class Player : MonoBehaviour
     [SerializeField] private Vector2 boxSize;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float castDist;
+
+    //MOVE
     private InputAction moveAction;
     private InputAction jumpAction;
     private Rigidbody2D rb;
     private float moveInput;
     private float jumpInput;
+
+    //INTERACTABLE
+    private InputAction interactAction;
+    private InteractableObject currentInteractable;
+
     private int coinCount = 0;
     private bool isKnockBack = false;
    
@@ -27,11 +35,17 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         moveAction = InputSystem.actions.FindAction("MovementPlatformer");
         jumpAction = InputSystem.actions.FindAction("MovementPlatformerJump");
+        interactAction = InputSystem.actions.FindAction("Interact");
     }
 
     private void Update() {
         moveInput = moveAction.ReadValue<float>();
         jumpInput = jumpAction.ReadValue<float>();
+
+        if(currentInteractable != null && interactAction.WasPressedThisFrame())
+        {
+            currentInteractable.Interact();
+        }
     }
 
     private void LateUpdate() {
@@ -52,14 +66,30 @@ public class Player : MonoBehaviour
         Gizmos.DrawWireCube(transform.position + Vector3.down * castDist, boxSize);
     }
 
-    // Coin Collect
+    // Interact Check
     void OnTriggerEnter2D(Collider2D other)
     {
+        // coin
         if(other.CompareTag("Coin"))
         {
             Destroy(other.gameObject);
             Debug.Log($"Da nhat {++coinCount}");
         }
+
+        // interactable
+        if(other.CompareTag("Interactable"))
+        {
+            if (other.TryGetComponent<InteractableObject>(out var interactableObject))
+            {
+                currentInteractable = interactableObject;
+                Debug.Log("Bam E de tuong tac");
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Interactable")) currentInteractable = null;
     }
 
     // Player knock back when shooting

@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "[UNITY Buổi 6] Event & Coroutine.md",
+                "file": "[UNITY BUỔI 7] Animator Controller, Animator Component, Animation Clip, Blend Tree, Finite State Machine.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "[UNITY Buổi 6] Event & Coroutine"
+              "title": "[UNITY BUỔI 7] Animator Controller, Animator Component, Animation Clip, Blend Tree, Finite State Machine"
             }
           }
         ]
@@ -190,9 +190,11 @@
   },
   "active": "62d8fb045db6a4a4",
   "lastOpenFiles": [
+    "[UNITY Buổi 6] Event & Coroutine.md",
+    "[UNITY BUỔI 7] Animator Controller, Animator Component, Animation Clip, Blend Tree, Finite State Machine.md",
+    "UNITY GCC",
     "[UNITY Buổi 6] Event & Coroutine.md.meta",
     "[UNITY Buổi 5] Trigger, Raycast, Layermask.md",
-    "[UNITY Buổi 6] Event & Coroutine.md",
     "[UNITY Buổi 4] New Input System, Vật lý 2D.md",
     "Untitled.base",
     "Untitled 1.base",
@@ -207,8 +209,6 @@
     "Pasted image 20260831151528.png",
     "Pasted image 20260831151528.png.meta",
     "Pasted image 20260831151615.png.meta",
-    "Pasted image 20260831151615.png",
-    "[Unity Buổi 3] Vòng đời, thao tác với Asset, thư viện transform, gizmos.md.meta",
-    "[Unity Buổi 3].md.meta"
+    "Pasted image 20260831151615.png"
   ]
 }
