@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
@@ -27,12 +26,17 @@ public class Player : MonoBehaviour
     private InputAction interactAction;
     private InteractableObject currentInteractable;
 
+    //ANIM
+    [SerializeField] private Animator animatorPlayer;
+    private SpriteRenderer spriteFlip;
+
     private int coinCount = 0;
     private bool isKnockBack = false;
    
     // Movement Basic
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
+        spriteFlip = GetComponent<SpriteRenderer>();
         moveAction = InputSystem.actions.FindAction("MovementPlatformer");
         jumpAction = InputSystem.actions.FindAction("MovementPlatformerJump");
         interactAction = InputSystem.actions.FindAction("Interact");
@@ -41,6 +45,9 @@ public class Player : MonoBehaviour
     private void Update() {
         moveInput = moveAction.ReadValue<float>();
         jumpInput = jumpAction.ReadValue<float>();
+
+        animatorPlayer.SetFloat("isRun", Mathf.Abs(moveInput));
+        Flip();
 
         if(currentInteractable != null && interactAction.WasPressedThisFrame())
         {
@@ -52,7 +59,11 @@ public class Player : MonoBehaviour
         if (isKnockBack) return;
         rb.linearVelocityX = moveInput * speed;
         if (jumpAction.IsPressed() && isGrounded())
-        rb.linearVelocityY = jumpInput * jumpForce;
+        {
+            rb.linearVelocityY = jumpInput * jumpForce;
+        }
+        animatorPlayer.SetFloat("isJump", rb.linearVelocityY);
+        if(isGrounded()) animatorPlayer.SetBool("onGrounded", true);
     }
 
     // Ground Check
@@ -110,5 +121,12 @@ public class Player : MonoBehaviour
 
         yield return new WaitForSeconds(timeKnockBack);
         isKnockBack = false;
+    }
+    private void Flip()
+    {
+        Vector3 currDir = transform.localScale;
+        if(moveInput > 0) currDir.x = 1;
+        else if(moveInput < 0) currDir.x = -1;
+        transform.localScale = currDir; 
     }
 }
