@@ -4,91 +4,94 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    [Header("Player")]
+    [Header("Movement Settings")]
     [SerializeField] private float speed = 5f;
     [SerializeField] private float jumpForce = 5f;
     [SerializeField] private float knockBackForce = 1f;
     [SerializeField] private float timeKnockBack = 0.05f;
 
-    [Header("BoxCast")]
+    [Header("Ground Check")]
     [SerializeField] private Vector2 boxSize;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float castDist;
 
-    //MOVE
+    [Header("References Anim")]
+    [SerializeField] private PlayerAnimation playerAnimation;
+
+    // MOVEMENT & PHYSICS
+    private Rigidbody2D rb;
     private InputAction moveAction;
     private InputAction jumpAction;
-    private Rigidbody2D rb;
+    private InputAction interactAction;
+    private InputAction hitAction;
     private float moveInput;
     private float jumpInput;
+    private float hitInput;
 
-    //INTERACTABLE
-    private InputAction interactAction;
+    // STATES
     private InteractableObject currentInteractable;
-
-    //ANIM
-    [SerializeField] private Animator animatorPlayer;
-    private SpriteRenderer spriteFlip;
-
     private int coinCount = 0;
     private bool isKnockBack = false;
-   
-    // Movement Basic
-    private void Awake() {
+    private Coroutine knockBackRoutine;
+
+    private void Awake()
+    {
         rb = GetComponent<Rigidbody2D>();
-        spriteFlip = GetComponent<SpriteRenderer>();
+        if (playerAnimation == null) playerAnimation = GetComponent<PlayerAnimation>();
+
         moveAction = InputSystem.actions.FindAction("MovementPlatformer");
         jumpAction = InputSystem.actions.FindAction("MovementPlatformerJump");
         interactAction = InputSystem.actions.FindAction("Interact");
+        hitAction = InputSystem.actions.FindAction("Click");
     }
 
-    private void Update() {
+    private void Update()
+    {
         moveInput = moveAction.ReadValue<float>();
         jumpInput = jumpAction.ReadValue<float>();
+        hitInput = hitAction.ReadValue<float>();
+        
+        //ANIM
+        if (playerAnimation != null)
+        {
+            playerAnimation.UpdateAnimation(moveInput, rb.linearVelocityY, isGrounded(), hitInput);
+        }
 
-        animatorPlayer.SetFloat("isRun", Mathf.Abs(moveInput));
-        Flip();
-
-        if(currentInteractable != null && interactAction.WasPressedThisFrame())
+        // INTERACT
+        if (currentInteractable != null && interactAction.WasPressedThisFrame())
         {
             currentInteractable.Interact();
         }
     }
 
-    private void LateUpdate() {
+    private void LateUpdate()
+    {
         if (isKnockBack) return;
+
         rb.linearVelocityX = moveInput * speed;
+
+        //Jump
         if (jumpAction.IsPressed() && isGrounded())
         {
             rb.linearVelocityY = jumpInput * jumpForce;
         }
-        animatorPlayer.SetFloat("isJump", rb.linearVelocityY);
-        if(isGrounded()) animatorPlayer.SetBool("onGrounded", true);
     }
 
-    // Ground Check
-    public bool isGrounded() {
+    //GROUND CHECK
+    public bool isGrounded()
+    {
         return Physics2D.BoxCast(transform.position, boxSize, 0f, Vector2.down, castDist, groundLayer);
     }
 
-    private void OnDrawGizmos()
+    //INTERACT CHECK
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(transform.position + Vector3.down * castDist, boxSize);
-    }
-
-    // Interact Check
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        // coin
-        if(other.CompareTag("Coin"))
+        if (other.CompareTag("Coin"))
         {
             Destroy(other.gameObject);
             Debug.Log($"Da nhat {++coinCount}");
         }
-
-        // interactable
-        if(other.CompareTag("Interactable"))
+        else if (other.CompareTag("Interactable"))
         {
             if (other.TryGetComponent<InteractableObject>(out var interactableObject))
             {
@@ -97,36 +100,36 @@ public class Player : MonoBehaviour
             }
         }
     }
-
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Interactable")) currentInteractable = null;
+        if (other.CompareTag("Interactable"))
+        {
+            currentInteractable = null;
+        }
     }
 
-    // Player knock back when shooting
+    // KNOCKBACK
     public void shootKnockBack()
     {
         Vector2 mousePos = Mouse.current.position.ReadValue();
         Vector3 mousePosInWorld = Camera.main.ScreenToWorldPoint(mousePos);
-        Vector2 knockBackDirection = (Vector2)mousePosInWorld - (Vector2)transform.position;
+        Vector2 knockBackDirection = ((Vector2)mousePosInWorld - (Vector2)transform.position).normalized;
 
-        StopCoroutine(nameof(PCoroutine));
-        StartCoroutine(PCoroutine(knockBackDirection));
+        if (knockBackRoutine != null) StopCoroutine(knockBackRoutine);
+        knockBackRoutine = StartCoroutine(PCoroutine(knockBackDirection));
     }
-
     private IEnumerator PCoroutine(Vector2 knockBackDirection)
     {
         isKnockBack = true;
         rb.linearVelocity = -knockBackDirection * knockBackForce;
-
         yield return new WaitForSeconds(timeKnockBack);
         isKnockBack = false;
+        knockBackRoutine = null;
     }
-    private void Flip()
+
+    private void OnDrawGizmos()
     {
-        Vector3 currDir = transform.localScale;
-        if(moveInput > 0) currDir.x = 1;
-        else if(moveInput < 0) currDir.x = -1;
-        transform.localScale = currDir; 
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(transform.position + Vector3.down * castDist, boxSize);
     }
 }

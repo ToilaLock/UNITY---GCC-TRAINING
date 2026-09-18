@@ -8,6 +8,8 @@ public class PlayerShoot : MonoBehaviour
     [Header("Bullet Setting")]
     [SerializeField] private BulletFly bullet;
     [SerializeField] private int bulletNum = 7;
+
+    //INPUT SYSTEM
     private InputAction clickAction;
     private float clickInput;
     private int currBullet;
