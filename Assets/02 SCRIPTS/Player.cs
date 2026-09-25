@@ -23,10 +23,8 @@ public class Player : MonoBehaviour
     private InputAction moveAction;
     private InputAction jumpAction;
     private InputAction interactAction;
-    private InputAction hitAction;
     private float moveInput;
     private float jumpInput;
-    private float hitInput;
 
     // STATES
     private InteractableObject currentInteractable;
@@ -42,19 +40,17 @@ public class Player : MonoBehaviour
         moveAction = InputSystem.actions.FindAction("MovementPlatformer");
         jumpAction = InputSystem.actions.FindAction("MovementPlatformerJump");
         interactAction = InputSystem.actions.FindAction("Interact");
-        hitAction = InputSystem.actions.FindAction("Click");
     }
 
     private void Update()
     {
         moveInput = moveAction.ReadValue<float>();
         jumpInput = jumpAction.ReadValue<float>();
-        hitInput = hitAction.ReadValue<float>();
         
         //ANIM
         if (playerAnimation != null)
         {
-            playerAnimation.UpdateAnimation(moveInput, rb.linearVelocityY, isGrounded(), hitInput);
+            playerAnimation.UpdateAnimation(moveInput, rb.linearVelocityY, isGrounded());
         }
 
         // INTERACT
